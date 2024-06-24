@@ -137,6 +137,8 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   // States
   const [addUserOpen, setAddUserOpen] = useState(false)
   const [addFilterDrawerOpen, setaddFilterDrawerOpen] = useState(false)
+  const [category_id, setCategory_id] = useState(null);
+
   const [rowSelection, setRowSelection] = useState({})
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [data, setData] = useState(...[tableData])
@@ -176,6 +178,17 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
       .catch((error) => {
 
       });
+  };
+
+  const toggleAddFilterDrawer = (categoryId) => {
+    console.log('catergory id',categoryId)
+    setaddFilterDrawerOpen(!addFilterDrawerOpen);
+    setCategory_id(categoryId); // Set the category_id before opening the drawer
+
+  };
+
+  const handleCloseDrawer = () => {
+    setaddFilterDrawerOpen(false);
   };
 
   // Hooks
@@ -402,7 +415,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
                   <Button
                       variant='contained'
                       startIcon={<i className='tabler-plus' />}
-                      onClick={() => setaddFilterDrawerOpen(!addFilterDrawerOpen)}
+                      onClick={() => toggleAddFilterDrawer(fdata.category_id)}
                       className='is-full sm:is-auto'
                     >Add Filter
                   </Button>
@@ -470,7 +483,16 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
         />
       </Card>
       <AddFilterCategoryDrawer open={addUserOpen} handleClose={() => setAddUserOpen(!addUserOpen)} />
-      <AddFilterDrawer open={addFilterDrawerOpen}  updateFilterData={handleAddFilters} handleClose={() => setaddFilterDrawerOpen(!addFilterDrawerOpen)}/>
+      {/* <AddFilterDrawer open={addFilterDrawerOpen}  updateFilterData={handleAddFilters} handleClose={
+        () => setaddFilterDrawerOpen(!addFilterDrawerOpen)
+        }/> */}
+
+      <AddFilterDrawer
+              open={addFilterDrawerOpen}
+              category_id={category_id} // Pass category_id as a prop
+              updateFilterData={handleAddFilters}
+              handleClose={handleCloseDrawer}
+            />
     </>
   )
 }

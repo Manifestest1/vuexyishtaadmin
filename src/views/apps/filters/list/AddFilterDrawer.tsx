@@ -16,6 +16,7 @@ import CustomTextField from '@core/components/mui/TextField'
 
 type Props = {
   open: boolean
+  category_id:string
   handleClose: () => void
   updateFilterData: (formData: FormData) => void
 }
@@ -46,9 +47,7 @@ const initialData = {
 }
 
 
-const AddFilterDrawer = ({ open,updateFilterData, handleClose }: Props) => {
-
-
+const AddFilterDrawer = ({ open,updateFilterData, handleClose,category_id }: Props) => {
 
   // States
   const [formData, setFormData] = useState<FormDataType>(initialData)
@@ -102,7 +101,6 @@ const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     {
       formData.append('image', uploadedImage);
     }
-
 
     updateFilterData(formData);
   }
@@ -164,6 +162,7 @@ const onChange = (e: ChangeEvent<HTMLInputElement>) => {
             fullWidth
             id='select-role'
             placeholder='Select Category'
+            value={category_id}
             onChange={(e) => setSelectedCategory(e.target.value as string)}
             label='Parent Category'
           >

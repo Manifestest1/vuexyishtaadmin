@@ -1,5 +1,6 @@
 // Component Imports
 import UserList from '@views/apps/filters/list'
+import ProtectedRoute from '@/context/ProtectedRoute'
 
 const getData = async () => {
   // Vars
@@ -20,7 +21,11 @@ const UserListApp = async () => {
   // Vars
   const data = await getData()
 
-  return <UserList userData={data} />
+  return (
+    <ProtectedRoute>
+      <UserList userData={data} />
+    </ProtectedRoute>
+  )
 }
 
 export default UserListApp
