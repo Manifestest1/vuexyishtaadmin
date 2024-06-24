@@ -133,7 +133,7 @@ const Login = ({ mode }: { mode: SystemMode }) => {
     borderedDarkIllustration
   )
 
-  // Add New code 
+  // Add New code
 
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
@@ -189,12 +189,12 @@ const Login = ({ mode }: { mode: SystemMode }) => {
             <Typography variant='h4'>{`Welcome to ${themeConfig.templateName}! 👋🏻`}</Typography>
             <Typography>Please sign-in to your account and start the adventure</Typography>
           </div>
-          <Alert icon={false} className='bg-[var(--mui-palette-primary-lightOpacity)]'>
+          {/* <Alert icon={false} className='bg-[var(--mui-palette-primary-lightOpacity)]'>
             <Typography variant='body2' color='primary'>
               Email: <span className='font-medium'>admin@vuexy.com</span> / Pass:{' '}
               <span className='font-medium'>admin</span>
             </Typography>
-          </Alert>
+          </Alert> */}
           <form noValidate autoComplete='off' onSubmit={handleSubmit} className='flex flex-col gap-6'>
             {/* <Controller
               name='email'
@@ -243,7 +243,7 @@ const Login = ({ mode }: { mode: SystemMode }) => {
             <FormControl fullWidth>
               <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
               <OutlinedInput
-                label='Password' 
+                label='Password'
                 id='auth-login-password'
                 onChange={(e) => setPassword(e.target.value)}
                 type='password'
@@ -263,7 +263,7 @@ const Login = ({ mode }: { mode: SystemMode }) => {
                 // }
               />
             </FormControl>
-            <div className='flex justify-between items-center gap-x-3 gap-y-1 flex-wrap'> 
+            <div className='flex justify-between items-center gap-x-3 gap-y-1 flex-wrap'>
               <FormControlLabel control={<Checkbox defaultChecked />} label='Remember me' />
               <Typography
                 className='text-end'
@@ -279,7 +279,7 @@ const Login = ({ mode }: { mode: SystemMode }) => {
             </Button>
             <div className='flex justify-center items-center flex-wrap gap-2'>
               <Typography>New on our platform?</Typography>
-              <Typography component={Link} href={getLocalizedUrl('/register', locale as Locale)} color='primary'> 
+              <Typography component={Link} href={getLocalizedUrl('/register', locale as Locale)} color='primary'>
                 Create an account
               </Typography>
             </div>
@@ -287,7 +287,7 @@ const Login = ({ mode }: { mode: SystemMode }) => {
             {/* <Button
               color='secondary'
               className='self-center text-textPrimary'
-              startIcon={<img src='/images/logos/google.png' alt='Google' width={22} />} 
+              startIcon={<img src='/images/logos/google.png' alt='Google' width={22} />}
               sx={{ '& .MuiButton-startIcon': { marginInlineEnd: 3 } }}
               onClick={() => signIn('google')}
             >
