@@ -49,7 +49,7 @@ import CustomAvatar from '@core/components/mui/Avatar'
 
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
-import { getAllFilters,addFiltersData  } from '@/context/api/apiService'
+import { getAllFilters,addFiltersData,addFiltersCategory,getFiltersCategory  } from '@/context/api/apiService'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -139,6 +139,8 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   const [addFilterDrawerOpen, setaddFilterDrawerOpen] = useState(false)
   const [category_id, setCategory_id] = useState(null);
 
+  const [allCategory, setAllCategory] = useState(null);
+
   const [rowSelection, setRowSelection] = useState({})
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [data, setData] = useState(...[tableData])
@@ -148,7 +150,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   const image_base_path = 'http://localhost:8000/';
 
   const getAllFiltersApiFun = () =>
-    {
+  {
       getAllFilters()
       .then(response => {
           console.log(response.data,"Filter Data");
@@ -160,25 +162,53 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
             // Handle unauthorized access
           }
       });
-    }
+  }
+
+  const getAllFiltersCategory = () =>
+  {
+    getFiltersCategory()
+    .then(response => {
+        console.log(response.data,"Get All Category Api");
+        setAllCategory(response.data);
+      })
+    .catch((error) => {
+        if (error.response.status === 401)
+        {
+          // Handle unauthorized access
+        }
+    });
+  }
 
   useEffect(() => {
     getAllFiltersApiFun();
   }, []);
 
-  const handleAddFilters = (formData) => {
+  const handleAddFilters = (formData,resetForm) => {
     addFiltersData(formData)
       .then(response => {
         console.log(response, "Filter Data Added");
-
-        // setFilterData(...response.data.filters);
         getAllFiltersApiFun();
-
+        resetForm();
       })
       .catch((error) => {
 
       });
   };
+
+  const handleAddFiltersCategory = (name,order_no,resetForm) => {
+
+    addFiltersCategory(name,order_no)
+      .then(response => {
+        console.log(response, "Filter Category");
+        getAllFiltersCategory();
+        getAllFiltersApiFun();
+        resetForm();
+      })
+      .catch((error) => {
+
+      });
+
+  }
 
   const toggleAddFilterDrawer = (categoryId) => {
     console.log('catergory id',categoryId)
@@ -402,7 +432,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
             {allFilterData && allFilterData.map((fdata, index) => (
               <tr key={index}>
                 <td> <Checkbox/></td>
-                 <td>{fdata.category_name}</td>
+                 <td>{fdata.name}</td>
                  <td>{fdata.order_no}</td>
                  <td>
                   {fdata.sub_categories.map((subCategory, index) => (
@@ -415,7 +445,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
                   <Button
                       variant='contained'
                       startIcon={<i className='tabler-plus' />}
-                      onClick={() => toggleAddFilterDrawer(fdata.category_id)}
+                      onClick={() => toggleAddFilterDrawer(fdata.id)}
                       className='is-full sm:is-auto'
                     >Add Filter
                   </Button>
@@ -482,16 +512,20 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
           }}
         />
       </Card>
-      <AddFilterCategoryDrawer open={addUserOpen} handleClose={() => setAddUserOpen(!addUserOpen)} />
-      {/* <AddFilterDrawer open={addFilterDrawerOpen}  updateFilterData={handleAddFilters} handleClose={
-        () => setaddFilterDrawerOpen(!addFilterDrawerOpen)
-        }/> */}
+      <AddFilterCategoryDrawer
+            open={addUserOpen}
+            handleClose={() => setAddUserOpen(!addUserOpen)}
+            addFilterCategoryDrawerFun={handleAddFiltersCategory}
+          />
 
       <AddFilterDrawer
               open={addFilterDrawerOpen}
-              category_id={category_id} // Pass category_id as a prop
-              updateFilterData={handleAddFilters}
+              defaultCategoryId={category_id} // Pass category_id as a prop
+              addFilterDataDrawer={handleAddFilters}
               handleClose={handleCloseDrawer}
+              setAllFiltersCategory={getAllFiltersCategory}
+              setCategory={allCategory}
+
             />
     </>
   )

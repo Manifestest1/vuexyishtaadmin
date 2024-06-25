@@ -1,5 +1,5 @@
 // React Imports
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 
 // MUI Imports
 import Button from '@mui/material/Button'
@@ -8,57 +8,42 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 
-import { addFiltersCategory } from '@/context/api/apiService'
-
 // Component Imports
 import CustomTextField from '@core/components/mui/TextField'
 
 type Props = {
   open: boolean
+  resetForm: () => void
   handleClose: () => void
+  addFilterCategoryDrawerFun: () => void
 }
 
-type FormDataType = {
-  title: string
-  order_no: string
-}
-
-// Vars
-const initialData = {
-  title: '',
-  order_no: ''
-}
-
-const AddFilterCategoryDrawer = ({ open, handleClose }: Props) => {
+const AddFilterCategoryDrawer = ({ open, handleClose,addFilterCategoryDrawerFun}: Props) => {
   // States
-  const [formData, setFormData] = useState<FormDataType>(initialData)
 
-  const [categoryName, setCategoryName] = useState('');
-  const [categoryOrder, setCategoryOrder] = useState('');
+  const [categoryName, setCategoryName] = useState(null);
+  const [categoryOrder, setCategoryOrder] = useState(null);
+
+  useEffect(() => {
+    resetForm();
+  }, []);
+
+  const resetForm = () => {
+    setCategoryName(null);
+    setCategoryOrder(null);
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     handleClose()
     console.log(e,"Get For File");
+    addFilterCategoryDrawerFun(categoryName, categoryOrder,resetForm);
 
-    addFiltersCategory(categoryName, categoryOrder)
-    .then(response => {
-      console.log(response,"Category Added Succefully");
-      setFormData(initialData);
-    })
-    .catch(error => {
-      console.error('Error updating user status:', error);
-    });
-
-    setFormData(initialData)
   }
 
   const handleReset = () => {
     handleClose()
-    setFormData({
-      title: '',
-      order_no: ''
-    })
+    resetForm();
   }
 
   return (
@@ -83,22 +68,20 @@ const AddFilterCategoryDrawer = ({ open, handleClose }: Props) => {
             label='Title'
             fullWidth
             placeholder='Enter Title'
+            value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
           />
           <CustomTextField
             label='Position'
             fullWidth
             placeholder='Enter Position'
+            value={categoryOrder}
             onChange={(e) => setCategoryOrder(e.target.value)}
           />
 
           <div className='flex items-center gap-4'>
-            <Button variant='contained' type='submit'>
-              Add
-            </Button>
-            <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>
-              Discard
-            </Button>
+            <Button variant='contained' type='submit'>Add</Button>
+            <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>Discard</Button>
           </div>
         </form>
       </div>

@@ -9,192 +9,119 @@ import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 
-import { getFiltersCategory} from '@/context/api/apiService'
-
 // Component Imports
 import CustomTextField from '@core/components/mui/TextField'
 
 type Props = {
   open: boolean
-  category_id:string
+  defaultCategoryId:string
+  resetForm: () => void
   handleClose: () => void
-  updateFilterData: (formData: FormData) => void
+  addFilterDataDrawer: (formData: FormData) => void
+  setCategory:string
+  setAllFiltersCategory: () => void
 }
 
-type FormDataType = {
-  fullName: string
-  username: string
-  email: string
-  company: string
-  country: string
-  contact: string
-  role: string
-  plan: string
-  status: string
-}
-
-// Vars
-const initialData = {
-  fullName: '',
-  username: '',
-  email: '',
-  company: '',
-  country: '',
-  contact: '',
-  role: '',
-  plan: '',
-  status: ''
-}
-
-
-const AddFilterDrawer = ({ open,updateFilterData, handleClose,category_id }: Props) => {
+const AddFilterDrawer = ({ open,addFilterDataDrawer, handleClose,defaultCategoryId,setAllFiltersCategory,setCategory}: Props) => {
 
   // States
-  const [formData, setFormData] = useState<FormDataType>(initialData)
-  const [allCategory, setAllCategory] = useState(null);
 
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [subCategory, setSubCategory] = useState('');
-  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+  const [formData, setFormData] = useState({
+    categoryId: defaultCategoryId,
+    sub_category: '',
+    image: '',
+  });
 
   useEffect(() => {
+    setAllFiltersCategory();
+  }, []);
 
-    getFiltersCategory()
-        .then(response => {
-            console.log(response.data,"Get All Category Api");
+  useEffect(() => {
+    resetForm();
+  }, [defaultCategoryId]);
 
-            setAllCategory(response.data);
+const resetForm = () => {
+  setFormData({
+    categoryId: defaultCategoryId,
+    sub_category: '',
+    image: ''
+  });
+}
 
-        })
-        .catch((error) => {
-            if (error.response.status === 401)
-            {
-              // Handle unauthorized access
-            }
-        });
+  const handleCategoryChange = (e) => {
+    console.log('Selected category ID:', e.target.value);
+    setFormData({ ...formData, categoryId: e.target.value });
+  };
 
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, image: e.target.files[0] });
+  };
 
-}, []);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleClose();
 
-const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-  const reader = new FileReader();
-  const file = e.target.files?.[0];
+    const data = new FormData();
 
-  if (file)
-  {
-    reader.readAsDataURL(file);
-    setUploadedImage(file);
-  }
-};
+    data.append('category_id', formData.categoryId);
+    data.append('sub_category', formData.sub_category);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    handleClose()
-    setFormData(initialData)
-
-    const formData = new FormData();
-
-    formData.append('category_id', selectedCategory);
-    formData.append('sub_category', subCategory);
-
-    if(uploadedImage)
+    if (formData.image)
     {
-      formData.append('image', uploadedImage);
+      data.append('image', formData.image);
     }
 
-    updateFilterData(formData);
-  }
-
-    // Assuming you have an API service function to handle the upload
-  //   try
-  //   {
-  //       addFiltersData(formData)
-  //       .then(response => {
-  //           console.log(response,"Filter Data Added");
-  //           updateFilterData(response.data.add_filters_data);
-  //       })
-  //       .catch((error) => {
-  //           if (error.response.status === 401)
-  //           {
-  //           // Handle unauthorized access
-  //           }
-  //       });
-
-  //     // Handle success (e.g., show a success message, reset form, etc.)
-
-  //   }
-  //   catch (error)
-  //   {
-  //     // Handle error (e.g., show an error message)
-  //   }
-  // }
+    addFilterDataDrawer(data, resetForm);
+  };
 
   const handleReset = () => {
     handleClose()
     setFormData({
-      fullName: '',
-      username: '',
-      email: '',
-      company: '',
-      country: '',
-      contact: '',
-      role: '',
-      plan: '',
-      status: ''
+      categoryId: defaultCategoryId,
+      sub_category: '',
+      image: ''
     })
   }
 
   return (
     <Drawer open={open} anchor='right' variant='temporary' onClose={handleReset} ModalProps={{ keepMounted: true }}
-      sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
-    >
+      sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}>
       <div className='flex items-center justify-between plb-5 pli-6'>
         <Typography variant='h5'>Add Filter</Typography>
-        <IconButton onClick={handleReset}>
-          <i className='tabler-x text-textPrimary' />
-        </IconButton>
+        <IconButton onClick={handleReset}><i className='tabler-x text-textPrimary' /></IconButton>
       </div>
       <Divider />
       <div>
         <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-        <CustomTextField
+          <CustomTextField
             select
             fullWidth
             id='select-role'
             placeholder='Select Category'
-            value={category_id}
-            onChange={(e) => setSelectedCategory(e.target.value as string)}
-            label='Parent Category'
-          >
-            {allCategory && allCategory.map(category => (
+            onChange={handleCategoryChange}
+            value={formData.categoryId}
+            label='Parent Category'>
+            {setCategory && setCategory.map(category => (
               <MenuItem key={category.id} value={category.id}>
                 {category.name}
               </MenuItem>
             ))}
-
           </CustomTextField>
 
           <CustomTextField
             label='Title'
             fullWidth
             placeholder='Enter Title'
-            onChange={(e) => setSubCategory(e.target.value)}
-          />
+            value={formData.sub_category}
+           onChange={e => setFormData({ ...formData, sub_category: e.target.value })}/>
           <CustomTextField
             label='Attachment'
             fullWidth
-            placeholder='johndoe'
-            onChange={onChange}
-            type="file"
-          />
-
+            onChange={handleFileChange}
+            type="file"/>
           <div className='flex items-center gap-4'>
-            <Button variant='contained' type='submit'>
-              Add
-            </Button>
-            <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>
-              Discard
-            </Button>
+            <Button variant='contained' type='submit'>Add</Button>
+            <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>Discard</Button>
           </div>
         </form>
       </div>

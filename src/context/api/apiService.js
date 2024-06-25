@@ -1,6 +1,6 @@
 import axios from '../../utils/axios';
 
-export const getAllUsers = () => { 
+export const getAllUsers = () => {
     return axios.get('/get_all_users');
   };
 
@@ -8,7 +8,7 @@ export const getAllUsers = () => {
     return axios.post('/user_status_update', {userId,newStatus});
   };
 
-  export const userDelete = (userId) => { 
+  export const userDelete = (userId) => {
     return axios.put(`/user/${userId}/delete`);
   };
 
@@ -18,7 +18,7 @@ export const getAllUsers = () => {
     return axios.post('/add_filters_category', {name,order_no});
   };
 
-  export const getFiltersCategory = () => { 
+  export const getFiltersCategory = () => {
     return axios.get('/get_filters_category');
   };
 
@@ -26,7 +26,7 @@ export const getAllUsers = () => {
     return axios.post('/add_filters_data', formData);
   };
 
-  export const getAllFilters = () => { 
+  export const getAllFilters = () => {
     return axios.get('/get_filters_data');
   };
 
