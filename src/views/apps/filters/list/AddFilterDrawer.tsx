@@ -25,12 +25,13 @@ type Props = {
 const AddFilterDrawer = ({ open,addFilterDataDrawer, handleClose,defaultCategoryId,setAllFiltersCategory,setCategory}: Props) => {
 
   // States
-
   const [formData, setFormData] = useState({
     categoryId: defaultCategoryId,
     sub_category: '',
     image: '',
   });
+
+  const [error,setError] = useState(false);
 
   useEffect(() => {
     setAllFiltersCategory();
@@ -59,23 +60,37 @@ const resetForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleClose();
 
-    const data = new FormData();
 
-    data.append('category_id', formData.categoryId);
-    data.append('sub_category', formData.sub_category);
-
-    if (formData.image)
+    if(!formData.sub_category || !formData.image)
     {
-      data.append('image', formData.image);
-    }
+      setError(true);
 
-    addFilterDataDrawer(data, resetForm);
+return false
+    }
+    else
+    {
+      handleClose();
+      setError(false)
+
+      const data = new FormData();
+
+      data.append('category_id', formData.categoryId);
+      data.append('sub_category', formData.sub_category);
+
+      if (formData.image)
+      {
+        data.append('image', formData.image);
+      }
+
+      addFilterDataDrawer(data, resetForm);
+
+    }
   };
 
   const handleReset = () => {
     handleClose()
+    setError(false)
     setFormData({
       categoryId: defaultCategoryId,
       sub_category: '',
@@ -114,11 +129,17 @@ const resetForm = () => {
             placeholder='Enter Title'
             value={formData.sub_category}
            onChange={e => setFormData({ ...formData, sub_category: e.target.value })}/>
+
+           {error && !formData.sub_category && <span className='input-error'>Please enter valid title.</span>}
+
           <CustomTextField
             label='Attachment'
             fullWidth
             onChange={handleFileChange}
             type="file"/>
+
+           {error && !formData.sub_category && <span className='input-error'
+           >Please enter valid image.</span>}
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>Add</Button>
             <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>Discard</Button>

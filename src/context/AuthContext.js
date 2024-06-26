@@ -1,18 +1,21 @@
 'use client';
 import { createContext, useState, useEffect } from 'react';
-import axios from '../utils/axios';  // Import the configured Axios instance 
+
 import { useRouter } from 'next/navigation';
+
+import axios from '../utils/axios';  // Import the configured Axios instance
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {  
+export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
     useEffect(() => {
-        const token = localStorage.getItem('token');  
-        if (token) 
+        const token = localStorage.getItem('token');
+
+        if (token)
         {
             axios.get('/admin_user')
                 .then(response => {
@@ -21,11 +24,11 @@ export const AuthProvider = ({ children }) => {
                     setLoading(false);
                 })
                 .catch(() => {
-                    localStorage.removeItem('token'); 
+                    localStorage.removeItem('token');
                     setLoading(false);
                 });
-        } 
-        else 
+        }
+        else
         {
             setLoading(false);
         }
@@ -33,8 +36,10 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         const response = await axios.post('/admin_login', { email, password });
-        console.log(response,"Check Api");
+
+        console.log(response,"Admnn login api");
         const token = response.data.authorisation;
+
         localStorage.setItem('token', token);
         setUser(response.data.admin);
         router.push('/en/dashboards/crm');
@@ -42,9 +47,11 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         const response = await axios.post('/logout');
+
         console.log(response,"Check Logout Api");
         localStorage.removeItem('token');
         setUser(null);
+
         // router.push('/');
     };
 

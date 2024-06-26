@@ -133,7 +133,7 @@ const userRoleObj: UserRoleType = {
 // Column Definitions
 const columnHelper = createColumnHelper<UsersTypeWithAction>()
 
-const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
+const FilterListData = ({ tableData }: { tableData?: UsersType[] }) => {
   // States
   const [addUserOpen, setAddUserOpen] = useState(false)
   const [addFilterDrawerOpen, setaddFilterDrawerOpen] = useState(false)
@@ -531,4 +531,4 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   )
 }
 
-export default UserListTable
+export default FilterListData

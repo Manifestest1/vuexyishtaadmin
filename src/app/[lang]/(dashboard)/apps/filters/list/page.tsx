@@ -1,5 +1,5 @@
 // Component Imports
-import UserList from '@views/apps/filters/list'
+import FilterList from '@views/apps/filters/list'
 import ProtectedRoute from '@/context/ProtectedRoute'
 
 const getData = async () => {
@@ -23,7 +23,7 @@ const UserListApp = async () => {
 
   return (
     <ProtectedRoute>
-      <UserList userData={data} />
+      <FilterList userData={data} />
     </ProtectedRoute>
   )
 }
