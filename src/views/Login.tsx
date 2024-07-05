@@ -47,20 +47,43 @@ const Login = () => {
 
   const [error,setError] = useState(false);
 
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    return regex.test(email);
+  };
+
   const handleSubmit = async (e:any) => {
       e.preventDefault();
 
       if(!email || !password)
       {
-          setError(true);
+        setError("Please enter both email and password.");
 
-           return false
+           return
       }
-      else
+
+      if (!validateEmail(email))
       {
-        setError(false)
-       await login(email, password);
+        setError("Please enter a valid email address.");
+
+        return ;
       }
+
+        setError(" ")
+
+        try
+        {
+          await login(email, password);
+
+        }
+        catch (error)
+        {
+          setError("Please enter right credential.")
+
+          //setError(error.message); // Set the error message from the API
+        }
+
   };
 
 
@@ -87,7 +110,6 @@ const Login = () => {
               </div>
               <form noValidate autoComplete='off' onSubmit={handleSubmit} className='flex flex-col gap-6'>
                 <CustomTextField autoFocus fullWidth label='Email or Username' placeholder='Enter your email or username' onChange={(e) => setEmail(e.target.value)}/>
-                {error && !email && <span className='input-error'>Please enter valid email.</span>}
                 <CustomTextField
                   fullWidth
                   label='Password'
@@ -105,7 +127,7 @@ const Login = () => {
                     )
                   }}
                 />
-                {error && !password && <span className='input-error'>Please enter valid password.</span>}
+                {error && <span className='input-error'>{error}</span>}
                 <div className='flex justify-between items-center gap-x-3 gap-y-1 flex-wrap'>
                   <FormControlLabel control={<Checkbox />} label='Remember me' />
                   <Typography
