@@ -516,43 +516,47 @@ const FilterListData = ({ tableData }: { tableData?: UsersType[] }) => {
                     </td>
                     <td>{fdata.name}</td>
                     <td>{fdata.order_no}</td>
-                    <td>
-                      {fdata.sub_categories.map((subCategory, index) => (
-                        <Box
-                          key={index}
-                          sx={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            borderRadius: '5px',
-                            padding: '5px',
-                            cursor: 'pointer',
-                            backgroundColor: theme.palette.action.hover,
-                            marginRight: '5px',
-                            width: 'auto',
-                            '&:hover': {
-                              backgroundColor: theme.palette.action.hover
-                            }
-                          }}
-                        >
-                          <Avatar
-                            src={image_base_path + subCategory.image}
-                            alt='Uploaded Preview'
+                    <td style={{ maxWidth: '300px', overflowX: 'auto' }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                        {fdata.sub_categories.map((subCategory, index) => (
+                          <Box
+                            key={index}
                             sx={{
-                              width: 20,
-                              height: 20,
-                              borderRadius: '50%',
-                              marginRight: '12px'
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              borderRadius: '5px',
+                              padding: '5px',
+                              cursor: 'pointer',
+                              backgroundColor: theme.palette.action.hover,
+                              marginRight: '5px',
+                              marginBottom: '5px', // Optional: add margin bottom for spacing
+                              maxWidth: 'calc(100% - 10px)', // Adjust based on padding and margin
+                              '&:hover': {
+                                backgroundColor: theme.palette.action.hover
+                              }
                             }}
-                          />
-                          <Typography variant='body2' sx={{ marginRight: '8px' }}>
-                            {subCategory.sub_category}
-                          </Typography>
-                          <IconButton aria-label='status'>
-                            <CloseIcon onClick={() => handleClickFilterDelete(subCategory.id)} />
-                          </IconButton>
-                        </Box>
-                      ))}
+                          >
+                            <Avatar
+                              src={image_base_path + subCategory.image}
+                              alt='Uploaded Preview'
+                              sx={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: '50%',
+                                marginRight: '12px'
+                              }}
+                            />
+                            <Typography variant='body2' sx={{ marginRight: '8px' }}>
+                              {subCategory.sub_category}
+                            </Typography>
+                            <IconButton aria-label='status'>
+                              <CloseIcon onClick={() => handleClickFilterDelete(subCategory.id)} />
+                            </IconButton>
+                          </Box>
+                        ))}
+                      </div>
                     </td>
+
                     <td>
                       <Button
                         variant='contained'
@@ -664,7 +668,7 @@ const FilterListData = ({ tableData }: { tableData?: UsersType[] }) => {
         <DialogTitle id='alert-dialog-title'>{'Confirm Delete'}</DialogTitle>
         <DialogContent>
           <DialogContentText id='alert-dialog-description'>
-            Are you sure you want to delete this user?
+            Are you sure you want to delete this filter category?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

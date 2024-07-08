@@ -399,8 +399,8 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   return (
     <>
       <Card>
-        <CardHeader title='Filters' className='pbe-4' />
-        <TableFilters setData={setData} tableData={tableData} />
+        {/* <CardHeader title='Filters' className='pbe-4' /> */}
+        {/* <TableFilters setData={setData} tableData={tableData} /> */}
         <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
           <CustomTextField
             select
@@ -419,7 +419,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
               placeholder='Search User'
               className='is-full sm:is-auto'
             />
-            <Button
+            {/* <Button
               color='secondary'
               variant='tonal'
               startIcon={<i className='tabler-upload' />}
@@ -434,7 +434,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
               className='is-full sm:is-auto'
             >
               Add New User
-            </Button>
+            </Button> */}
           </div>
         </div>
         <div className='overflow-x-auto'>

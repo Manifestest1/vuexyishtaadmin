@@ -34,6 +34,7 @@ const AddFilterDrawer = ({
   const [formData, setFormData] = useState({
     categoryId: defaultCategoryId,
     sub_category: '',
+    api_key: '',
     image: ''
   })
 
@@ -51,6 +52,7 @@ const AddFilterDrawer = ({
     setFormData({
       categoryId: defaultCategoryId,
       sub_category: '',
+      api_key: '',
       image: ''
     })
   }
@@ -79,6 +81,7 @@ const AddFilterDrawer = ({
 
       data.append('category_id', formData.categoryId)
       data.append('sub_category', formData.sub_category)
+      data.append('api_key', formData.api_key)
 
       if (formData.image) {
         data.append('image', formData.image)
@@ -94,6 +97,7 @@ const AddFilterDrawer = ({
     setFormData({
       categoryId: defaultCategoryId,
       sub_category: '',
+      api_key: '',
       image: ''
     })
   }
@@ -142,6 +146,14 @@ const AddFilterDrawer = ({
           />
 
           {error && !formData.sub_category && <span className='input-error'>Please enter valid title.</span>}
+
+          <CustomTextField
+            label='Api Key'
+            fullWidth
+            placeholder='Enter Api Key'
+            value={formData.api_key}
+            onChange={e => setFormData({ ...formData, api_key: e.target.value })}
+          />
 
           <CustomTextField label='Attachment' fullWidth onChange={handleFileChange} type='file' />
 

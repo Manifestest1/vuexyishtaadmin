@@ -8,7 +8,7 @@ const UserListApp = async () => {
   // Vars
   const data = await getUserData()
 
-  return <UserList userData={data} />
+  return <UserList userData={data} /> 
 }
 
 export default UserListApp

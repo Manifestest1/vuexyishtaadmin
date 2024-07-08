@@ -103,7 +103,7 @@ const EditFilterCategoryDrawer = ({
       <div>
         <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
           <CustomTextField
-            label='Parent Category'
+            label='Title'
             fullWidth
             id='select-role'
             placeholder='Select Category'

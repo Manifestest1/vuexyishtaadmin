@@ -1,5 +1,5 @@
 // React Imports
-import { useState,useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 // MUI Imports
 import Button from '@mui/material/Button'
@@ -18,32 +18,31 @@ type Props = {
   addFilterCategoryDrawerFun: () => void
 }
 
-const AddFilterCategoryDrawer = ({ open, handleClose,addFilterCategoryDrawerFun}: Props) => {
+const AddFilterCategoryDrawer = ({ open, handleClose, addFilterCategoryDrawerFun }: Props) => {
   // States
 
-  const [categoryName, setCategoryName] = useState(null);
-  const [categoryOrder, setCategoryOrder] = useState(null);
+  const [categoryName, setCategoryName] = useState(null)
+  const [categoryOrder, setCategoryOrder] = useState(null)
 
   useEffect(() => {
-    resetForm();
-  }, []);
+    resetForm()
+  }, [])
 
   const resetForm = () => {
-    setCategoryName(null);
-    setCategoryOrder(null);
+    setCategoryName(null)
+    setCategoryOrder(null)
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     handleClose()
-    console.log(e,"Get For File");
-    addFilterCategoryDrawerFun(categoryName, categoryOrder,resetForm);
-
+    console.log(e, 'Get For File')
+    addFilterCategoryDrawerFun(categoryName, categoryOrder, resetForm)
   }
 
   const handleReset = () => {
     handleClose()
-    resetForm();
+    resetForm()
   }
 
   return (
@@ -69,19 +68,23 @@ const AddFilterCategoryDrawer = ({ open, handleClose,addFilterCategoryDrawerFun}
             fullWidth
             placeholder='Enter Title'
             value={categoryName}
-            onChange={(e) => setCategoryName(e.target.value)}
+            onChange={e => setCategoryName(e.target.value)}
           />
           <CustomTextField
             label='Position'
             fullWidth
             placeholder='Enter Position'
             value={categoryOrder}
-            onChange={(e) => setCategoryOrder(e.target.value)}
+            onChange={e => setCategoryOrder(e.target.value)}
           />
 
           <div className='flex items-center gap-4'>
-            <Button variant='contained' type='submit'>Add</Button>
-            <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>Discard</Button>
+            <Button variant='contained' type='submit'>
+              Add
+            </Button>
+            <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>
+              Discard
+            </Button>
           </div>
         </form>
       </div>

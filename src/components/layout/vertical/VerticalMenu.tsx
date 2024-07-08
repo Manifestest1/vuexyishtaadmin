@@ -99,12 +99,12 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           <MenuItem href={`/${locale}/users`}>{dictionary['navigation'].user}</MenuItem> */}
         </SubMenu>
 
-        <MenuSection label={dictionary['navigation'].appsPages}>
-          {/* <MenuItem href={`/${locale}/apps/calendar`} icon={<i className='tabler-calendar' />}>
+        {/* <MenuSection> */}
+        {/* <MenuItem href={`/${locale}/apps/calendar`} icon={<i className='tabler-calendar' />}>
             {dictionary['navigation'].calendar}
           </MenuItem> */}
 
-          {/* <SubMenu label={dictionary['navigation'].invoice} icon={<i className='tabler-file-description' />}>
+        {/* <SubMenu label={dictionary['navigation'].invoice} icon={<i className='tabler-file-description' />}>
             <MenuItem href={`/${locale}/apps/invoice/list`}>{dictionary['navigation'].list}</MenuItem>
             <MenuItem href={`/${locale}/apps/invoice/preview/${id || '4987'}`}>
               {dictionary['navigation'].preview}
@@ -113,21 +113,21 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             <MenuItem href={`/${locale}/apps/invoice/add`}>{dictionary['navigation'].add}</MenuItem>
           </SubMenu> */}
 
-          {/* Users Menu Setup */}
-          {/* <SubMenu label={dictionary['navigation'].user} icon={<i className='tabler-user' />}>
+        {/* Users Menu Setup */}
+        {/* <SubMenu label={dictionary['navigation'].user} icon={<i className='tabler-user' />}>
             <MenuItem href={`/${locale}/apps/user/list`}>{dictionary['navigation'].list}</MenuItem>
             <MenuItem href={`/${locale}/apps/user/view`}>{dictionary['navigation'].view}</MenuItem>
           </SubMenu> */}
-          <MenuItem href={`/${locale}/apps/user/list`} icon={<i className='tabler-user' />}>
-            {dictionary['navigation'].users}
-          </MenuItem>
+        <MenuItem href={`/${locale}/apps/user/list`} icon={<i className='tabler-user' />}>
+          {dictionary['navigation'].users}
+        </MenuItem>
 
-          <SubMenu label={dictionary['navigation'].filters} icon={<i className='tabler-filter' />}>
-            <MenuItem href={`/${locale}/apps/filters/list`}>{dictionary['navigation'].list}</MenuItem>
-          </SubMenu>
-          {/* Users Menu Setup */}
+        <SubMenu label={dictionary['navigation'].filters} icon={<i className='tabler-filter' />}>
+          <MenuItem href={`/${locale}/apps/filters/list`}>{dictionary['navigation'].list}</MenuItem>
+        </SubMenu>
+        {/* Users Menu Setup */}
 
-          {/* <SubMenu label={dictionary['navigation'].rolesPermissions} icon={<i className='tabler-lock' />}>
+        {/* <SubMenu label={dictionary['navigation'].rolesPermissions} icon={<i className='tabler-lock' />}>
             <MenuItem href={`/${locale}/apps/roles`}>{dictionary['navigation'].roles}</MenuItem>
             <MenuItem href={`/${locale}/apps/permissions`}>{dictionary['navigation'].permissions}</MenuItem>
           </SubMenu>
@@ -321,7 +321,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             </SubMenu>
             <MenuItem disabled>{dictionary['navigation'].disabledMenu}</MenuItem>
           </SubMenu> */}
-        </MenuSection>
+        {/* </MenuSection> */}
       </Menu>
       {/* <Menu
         popoutMenuOffset={{ mainAxis: 23 }}
