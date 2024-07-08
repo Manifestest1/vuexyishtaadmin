@@ -1,15 +1,14 @@
 'use client'
 
 // React Imports
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 
 // Next Imports
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
-import Grid from '@mui/material/Grid'
-
 // MUI Imports
+import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
@@ -20,7 +19,7 @@ import Button from '@mui/material/Button'
 import FormControlLabel from '@mui/material/FormControlLabel'
 
 // Type Imports
-import type { Locale } from '@configs/i18n'
+import { useForm, Controller } from 'react-hook-form'
 
 // Component Imports
 import Logo from '@components/layout/shared/Logo'
@@ -37,55 +36,39 @@ import AuthIllustrationWrapper from './pages/auth/AuthIllustrationWrapper'
 import AuthContext from '@/context/AuthContext'
 import ProtectedLoginRoute from '../context/ProtectedLoginRoute'
 
+// Third-party Imports
+
+type FormValues = {
+  email: string
+  password: string
+}
+
 const Login = () => {
+  // Hooks
+  const {
+    control,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<FormValues>({
+    defaultValues: {
+      email: '',
+      password: ''
+    }
+  })
+
   // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
 
-  const { login } = useContext(AuthContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { login } = useContext(AuthContext)
 
-  const [error,setError] = useState(false);
-
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    return regex.test(email);
-  };
-
-  const handleSubmit = async (e:any) => {
-      e.preventDefault();
-
-      if(!email || !password)
-      {
-        setError("Please enter both email and password.");
-
-           return
-      }
-
-      if (!validateEmail(email))
-      {
-        setError("Please enter a valid email address.");
-
-        return ;
-      }
-
-        setError(" ")
-
-        try
-        {
-          await login(email, password);
-
-        }
-        catch (error)
-        {
-          setError("Please enter right credential.")
-
-          //setError(error.message); // Set the error message from the API
-        }
-
-  };
-
+  const onSubmit = async (data: FormValues) => {
+    try {
+      await login(data.email, data.password)
+    } catch (error) {
+      // Handle error
+      console.error(error)
+    }
+  }
 
   // Hooks
   const { lang: locale } = useParams()
@@ -93,63 +76,89 @@ const Login = () => {
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
   return (
-   <ProtectedLoginRoute>
-    <Grid container spacing={80}>
-      <Grid item xs={12} md={4}></Grid>
+    <ProtectedLoginRoute>
+      <Grid container spacing={80}>
+        <Grid item xs={12} md={4}></Grid>
 
-      <Grid item xs={12} md={4} sx={{mt:36,alignItems:'center'}}>
-        <AuthIllustrationWrapper>
-          <Card className='flex flex-col'>
-            <CardContent className='sm:!p-12'>
-              <div className='flex justify-center mbe-6'>
-                <Logo />
-              </div>
-              <div className='flex flex-col gap-1 mbe-6'>
-                <Typography variant='h4'>{`Welcome to ${themeConfig.templateName}! 👋🏻`}</Typography>
-                <Typography>Please sign-in to your account and start the adventure</Typography>
-              </div>
-              <form noValidate autoComplete='off' onSubmit={handleSubmit} className='flex flex-col gap-6'>
-                <CustomTextField autoFocus fullWidth label='Email or Username' placeholder='Enter your email or username' onChange={(e) => setEmail(e.target.value)}/>
-                <CustomTextField
-                  fullWidth
-                  label='Password'
-                  placeholder='············'
-                  id='outlined-adornment-password'
-                  type={isPasswordShown ? 'text' : 'password'}
-                  onChange={(e) => setPassword(e.target.value)}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
-                        <IconButton edge='end' onClick={handleClickShowPassword} onMouseDown={e => e.preventDefault()}>
-                          <i className={isPasswordShown ? 'tabler-eye-off' : 'tabler-eye'} />
-                        </IconButton>
-                      </InputAdornment>
-                    )
-                  }}
-                />
-                {error && <span className='input-error'>{error}</span>}
-                <div className='flex justify-between items-center gap-x-3 gap-y-1 flex-wrap'>
-                  <FormControlLabel control={<Checkbox />} label='Remember me' />
-                  <Typography
-                    className='text-end'
-                    color='primary'
-                    component={Link}
-                    href={getLocalizedUrl('pages/auth/forgot-password-v1', locale as Locale)}
-                  >
-                    Forgot password?
-                  </Typography>
+        <Grid item xs={12} md={4} sx={{ mt: 36, alignItems: 'center' }}>
+          <AuthIllustrationWrapper>
+            <Card className='flex flex-col'>
+              <CardContent className='sm:!p-12'>
+                <div className='flex justify-center mbe-6'>
+                  <Logo />
                 </div>
-                <Button fullWidth variant='contained' type='submit'>
-                  Login
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </AuthIllustrationWrapper>
+                <div className='flex flex-col gap-1 mbe-6'>
+                  <Typography variant='h4'>{`Welcome to ${themeConfig.templateName}! 👋🏻`}</Typography>
+                  <Typography>Please sign-in to your account and start the adventure</Typography>
+                </div>
+                <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6'>
+                  <Controller
+                    name='email'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <CustomTextField
+                        {...field}
+                        fullWidth
+                        label='Email'
+                        placeholder='Enter your email'
+                        error={!!errors.email}
+                        helperText={errors.email ? 'This field is required.' : ''}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name='password'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <CustomTextField
+                        {...field}
+                        fullWidth
+                        label='Password'
+                        id='outlined-password'
+                        placeholder='············'
+                        type={isPasswordShown ? 'text' : 'password'}
+                        error={!!errors.password}
+                        helperText={errors.password ? 'This field is required.' : ''}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position='end'>
+                              <IconButton
+                                edge='end'
+                                onClick={handleClickShowPassword}
+                                onMouseDown={e => e.preventDefault()}
+                                aria-label='toggle password visibility'
+                              >
+                                <i className={isPasswordShown ? 'tabler-eye-off' : 'tabler-eye'} />
+                              </IconButton>
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    )}
+                  />
+                  <div className='flex justify-between items-center gap-x-3 gap-y-1 flex-wrap'>
+                    <FormControlLabel control={<Checkbox />} label='Remember me' />
+                    <Typography
+                      className='text-end'
+                      color='primary'
+                      component={Link}
+                      href={getLocalizedUrl('pages/auth/forgot-password-v1', locale as Locale)}
+                    >
+                      Forgot password?
+                    </Typography>
+                  </div>
+                  <Button fullWidth variant='contained' type='submit'>
+                    Login
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </AuthIllustrationWrapper>
+        </Grid>
       </Grid>
-
-    </Grid>
-   </ProtectedLoginRoute>
+    </ProtectedLoginRoute>
   )
 }
 

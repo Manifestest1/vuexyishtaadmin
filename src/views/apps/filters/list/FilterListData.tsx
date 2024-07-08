@@ -12,10 +12,13 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
-import { styled } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
 import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
+
+import CloseIcon from '@mui/icons-material/Close'
+import { Box, Avatar } from '@mui/material'
 
 // Third-party Imports
 import classnames from 'classnames'
@@ -37,11 +40,22 @@ import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
 // Type Imports
 
+import Dialog from '@mui/material/Dialog'
+
+import DialogActions from '@mui/material/DialogActions'
+
+import DialogContent from '@mui/material/DialogContent'
+
+import DialogContentText from '@mui/material/DialogContentText'
+
+import DialogTitle from '@mui/material/DialogTitle'
+
 import type { UsersType } from '@/types/apps/userTypes'
 
 // Component Imports
 import AddFilterCategoryDrawer from './AddFilterCategoryDrawer'
 import AddFilterDrawer from './AddFilterDrawer'
+import EditFilterCategoryDrawer from './EditFilterCategoryDrawer'
 import OptionMenu from '@core/components/option-menu'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import CustomTextField from '@core/components/mui/TextField'
@@ -49,7 +63,16 @@ import CustomAvatar from '@core/components/mui/Avatar'
 
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
-import { getAllFilters,addFiltersData,addFiltersCategory,getFiltersCategory  } from '@/context/api/apiService'
+import {
+  getAllFilters,
+  addFiltersData,
+  addFiltersCategory,
+  getFiltersCategory,
+  filterDelete,
+  filterCategoryEdit,
+  filterCategoryDelete,
+  updateFilterCategoryData
+} from '@/context/api/apiService'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -70,8 +93,6 @@ type UsersTypeWithAction = UsersType & {
 type UserRoleType = {
   [key: string]: { icon: string; color: string }
 }
-
-
 
 // Styled Components
 const Icon = styled('i')({})
@@ -102,7 +123,6 @@ const DebouncedInput = ({
   // States
   const [value, setValue] = useState(initialValue)
 
-
   useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
@@ -115,8 +135,6 @@ const DebouncedInput = ({
     return () => clearTimeout(timeout)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
-
-
 
   return <CustomTextField {...props} value={value} onChange={e => setValue(e.target.value)} />
 }
@@ -134,92 +152,154 @@ const userRoleObj: UserRoleType = {
 const columnHelper = createColumnHelper<UsersTypeWithAction>()
 
 const FilterListData = ({ tableData }: { tableData?: UsersType[] }) => {
+  const theme = useTheme()
+
   // States
   const [addUserOpen, setAddUserOpen] = useState(false)
   const [addFilterDrawerOpen, setaddFilterDrawerOpen] = useState(false)
-  const [category_id, setCategory_id] = useState(null);
+  const [category_id, setCategory_id] = useState(null)
 
-  const [allCategory, setAllCategory] = useState(null);
+  const [editCategoryData, setEditCategoryData] = useState({ name: '', order_no: '' })
+
+  const [editFilterDrawerOpen, seteditFilterDrawerOpen] = useState(false)
+
+  const [allCategory, setAllCategory] = useState(null)
 
   const [rowSelection, setRowSelection] = useState({})
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [data, setData] = useState(...[tableData])
   const [globalFilter, setGlobalFilter] = useState('')
 
-  const [allFilterData, setFilterData] = useState(null);
-  const image_base_path = 'http://localhost:8000/';
+  const [allFilterData, setFilterData] = useState(null)
+  const image_base_path = 'http://localhost:8000/'
 
-  const getAllFiltersApiFun = () =>
-  {
-      getAllFilters()
+  const [open, setOpen] = useState(false)
+  const [selectedFilterCatId, setSelectedFilterCatId] = useState(null)
+
+  const getAllFiltersApiFun = () => {
+    getAllFilters()
       .then(response => {
-          console.log(response.data,"Filter Data");
-          setFilterData(response.data.filters);
-        })
-      .catch((error) => {
-          if (error.response.status === 401)
-          {
-            // Handle unauthorized access
-          }
-      });
-  }
-
-  const getAllFiltersCategory = () =>
-  {
-    getFiltersCategory()
-    .then(response => {
-        console.log(response.data,"Get All Category Api");
-        setAllCategory(response.data);
+        console.log(response.data, 'Filter Data')
+        setFilterData(response.data.filters)
       })
-    .catch((error) => {
-        if (error.response.status === 401)
-        {
+      .catch(error => {
+        if (error.response.status === 401) {
           // Handle unauthorized access
         }
-    });
+      })
+  }
+
+  const getAllFiltersCategory = () => {
+    getFiltersCategory()
+      .then(response => {
+        console.log(response.data, 'Get All Category Api')
+        setAllCategory(response.data)
+      })
+      .catch(error => {
+        if (error.response.status === 401) {
+          // Handle unauthorized access
+        }
+      })
   }
 
   useEffect(() => {
-    getAllFiltersApiFun();
-  }, []);
+    getAllFiltersApiFun()
+  }, [])
 
-  const handleAddFilters = (formData,resetForm) => {
+  const handleAddFilters = (formData, resetForm) => {
     addFiltersData(formData)
       .then(response => {
-        console.log(response, "Filter Data Added");
-        getAllFiltersApiFun();
-        resetForm();
+        console.log(response, 'Filter Data Added')
+        getAllFiltersApiFun()
+        resetForm()
       })
-      .catch((error) => {
-
-      });
-  };
-
-  const handleAddFiltersCategory = (name,order_no,resetForm) => {
-
-    addFiltersCategory(name,order_no)
-      .then(response => {
-        console.log(response, "Filter Category");
-        getAllFiltersCategory();
-        getAllFiltersApiFun();
-        resetForm();
-      })
-      .catch((error) => {
-
-      });
-
+      .catch(error => {})
   }
 
-  const toggleAddFilterDrawer = (categoryId) => {
-    console.log('catergory id',categoryId)
-    setaddFilterDrawerOpen(!addFilterDrawerOpen);
-    setCategory_id(categoryId); // Set the category_id before opening the drawer
+  const handleAddFiltersCategory = (name, order_no, resetForm) => {
+    addFiltersCategory(name, order_no)
+      .then(response => {
+        console.log(response, 'Filter Category')
+        getAllFiltersCategory()
+        getAllFiltersApiFun()
+        resetForm()
+      })
+      .catch(error => {})
+  }
 
-  };
+  const handleEditFilters = (formData, resetForm) => {
+    addFiltersData(formData)
+      .then(response => {
+        console.log(response, 'Filter Data Added')
+        getAllFiltersApiFun()
+        resetForm()
+      })
+      .catch(error => {})
+  }
+
+  const toggleAddFilterDrawer = categoryId => {
+    console.log('catergory id', categoryId)
+    setaddFilterDrawerOpen(!addFilterDrawerOpen)
+    setCategory_id(categoryId) // Set the category_id before opening the drawer
+  }
+
+  const toggleEditFilterCategoryDrawer = categoryId => {
+    filterCategoryEdit(categoryId)
+      .then(response => {
+        console.log(response.data.filter_cat_data, 'Filter Category Data get')
+        setEditCategoryData(response.data.filter_cat_data)
+        seteditFilterDrawerOpen(!editFilterDrawerOpen)
+        setCategory_id(categoryId)
+      })
+      .catch(error => {})
+
+    // Set the category_id before opening the drawer
+  }
 
   const handleCloseDrawer = () => {
-    setaddFilterDrawerOpen(false);
-  };
+    setaddFilterDrawerOpen(false)
+  }
+
+  const handleCloseEditFilterDrawer = () => {
+    seteditFilterDrawerOpen(false)
+  }
+
+  const handleupdateEditFilterCategoryDataFun = formData => {
+    updateFilterCategoryData(formData).then(response => {
+      console.log(response, 'User Update')
+      getAllFiltersApiFun()
+    })
+  }
+
+  const handleClickFilterDelete = filterId => {
+    filterDelete(filterId)
+      .then(response => {
+        getAllFiltersApiFun()
+        console.log(response, 'Filter Category')
+      })
+      .catch(error => {})
+    console.log(filterId, 'Sub Filter Id')
+  }
+
+  const handleClickFCDelete = filtercatid => {
+    setSelectedFilterCatId(filtercatid)
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+    setSelectedFilterCatId(null)
+  }
+
+  const handleConfirmFilterCatDelete = async () => {
+    filterCategoryDelete(selectedFilterCatId)
+      .then(response => {
+        getAllFiltersApiFun()
+        handleClose()
+      })
+      .catch(error => {})
+    console.log(filtercatid, 'Filter cat Id')
+  }
 
   // Hooks
   // const { lang: locale } = useParams()
@@ -368,24 +448,24 @@ const FilterListData = ({ tableData }: { tableData?: UsersType[] }) => {
     <>
       <Card>
         <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
-        <DebouncedInput
-              value={globalFilter ?? ''}
-              onChange={value => setGlobalFilter(String(value))}
-              placeholder='Search User'
-              className='is-full sm:is-auto'
-            />
+          <DebouncedInput
+            value={globalFilter ?? ''}
+            onChange={value => setGlobalFilter(String(value))}
+            placeholder='Search User'
+            className='is-full sm:is-auto'
+          />
 
           <div className='flex flex-col sm:flex-row is-full sm:is-auto items-start sm:items-center gap-4'>
-          <CustomTextField
-            select
-            value={table.getState().pagination.pageSize}
-            onChange={e => table.setPageSize(Number(e.target.value))}
-            className='is-[70px]'
-          >
-            <MenuItem value='10'>10</MenuItem>
-            <MenuItem value='25'>25</MenuItem>
-            <MenuItem value='50'>50</MenuItem>
-          </CustomTextField>
+            <CustomTextField
+              select
+              value={table.getState().pagination.pageSize}
+              onChange={e => table.setPageSize(Number(e.target.value))}
+              className='is-[70px]'
+            >
+              <MenuItem value='10'>10</MenuItem>
+              <MenuItem value='25'>25</MenuItem>
+              <MenuItem value='50'>50</MenuItem>
+            </CustomTextField>
 
             <Button
               variant='contained'
@@ -427,55 +507,93 @@ const FilterListData = ({ tableData }: { tableData?: UsersType[] }) => {
               ))}
             </thead>
             <tbody>
+              {allFilterData &&
+                allFilterData.map((fdata, index) => (
+                  <tr key={index}>
+                    <td>
+                      {' '}
+                      <Checkbox />
+                    </td>
+                    <td>{fdata.name}</td>
+                    <td>{fdata.order_no}</td>
+                    <td>
+                      {fdata.sub_categories.map((subCategory, index) => (
+                        <Box
+                          key={index}
+                          sx={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            borderRadius: '5px',
+                            padding: '5px',
+                            cursor: 'pointer',
+                            backgroundColor: theme.palette.action.hover,
+                            marginRight: '5px',
+                            width: 'auto',
+                            '&:hover': {
+                              backgroundColor: theme.palette.action.hover
+                            }
+                          }}
+                        >
+                          <Avatar
+                            src={image_base_path + subCategory.image}
+                            alt='Uploaded Preview'
+                            sx={{
+                              width: 20,
+                              height: 20,
+                              borderRadius: '50%',
+                              marginRight: '12px'
+                            }}
+                          />
+                          <Typography variant='body2' sx={{ marginRight: '8px' }}>
+                            {subCategory.sub_category}
+                          </Typography>
+                          <IconButton aria-label='status'>
+                            <CloseIcon onClick={() => handleClickFilterDelete(subCategory.id)} />
+                          </IconButton>
+                        </Box>
+                      ))}
+                    </td>
+                    <td>
+                      <Button
+                        variant='contained'
+                        startIcon={<i className='tabler-plus' />}
+                        onClick={() => toggleAddFilterDrawer(fdata.id)}
+                        className='is-full sm:is-auto'
+                      >
+                        Add Filter
+                      </Button>
+                    </td>
 
+                    <td>
+                      <div className='flex items-center'>
+                        <IconButton onClick={() => toggleEditFilterCategoryDrawer(fdata.id)}>
+                          <i className='tabler-edit text-[22px] text-textSecondary' />
+                        </IconButton>
+                        <IconButton onClick={() => handleClickFCDelete(fdata.id)}>
+                          <i className='tabler-trash text-[22px] text-textSecondary' />
+                        </IconButton>
+                        {/* <OptionMenu
+                          iconClassName='text-[22px] text-textSecondary'
+                          options={[
+                            {
+                              text: 'Delete',
+                              icon: 'tabler-trash text-[22px]',
+                              menuItemProps: { className: 'flex items-center gap-2 text-textSecondary' },
 
-            {allFilterData && allFilterData.map((fdata, index) => (
-              <tr key={index}>
-                <td> <Checkbox/></td>
-                 <td>{fdata.name}</td>
-                 <td>{fdata.order_no}</td>
-                 <td>
-                  {fdata.sub_categories.map((subCategory, index) => (
-                    <span key={index} style={{justifyContent: 'center',borderRadius: '4px',padding: '20px',cursor: 'pointer',}}>
-                      <img src={image_base_path+subCategory.image} alt="Uploaded Preview" width={20} height={20} style={{borderRadius:'50%',marginTop:'13px',marginRight:'12px'}} /><span>{subCategory.sub_category}</span>
-                    </span>
-                  ))}
-                 </td>
-                 <td>
-                  <Button
-                      variant='contained'
-                      startIcon={<i className='tabler-plus' />}
-                      onClick={() => toggleAddFilterDrawer(fdata.id)}
-                      className='is-full sm:is-auto'
-                    >Add Filter
-                  </Button>
-                 </td>
+                            },
 
-                 <td>
-                  <div className='flex items-center'>
-                    <IconButton>
-                      <i className='tabler-edit text-[22px] text-textSecondary' />
-                    </IconButton>
-                    <OptionMenu
-                      iconClassName='text-[22px] text-textSecondary'
-                      options={[
-                        {
-                          text: 'Download',
-                          icon: 'tabler-download text-[22px]',
-                          menuItemProps: { className: 'flex items-center gap-2 text-textSecondary' }
-                        },
-                        {
-                          text: 'Edit',
-                          icon: 'tabler-edit text-[22px]',
-                          menuItemProps: { className: 'flex items-center gap-2 text-textSecondary' }
-                        }
-                      ]}
-                    />
-                  </div>
-                 </td>
-              </tr>
-               ))}
-                </tbody>
+                            {
+                              text: 'Edit',
+                              icon: 'tabler-edit text-[22px]',
+                              menuItemProps: { className: 'flex items-center gap-2 text-textSecondary' }
+                            }
+                          ]}
+                        /> */}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
             {/* {table.getFilteredRowModel().rows.length === 0 ? (
               <tbody>
                 <tr>
@@ -513,20 +631,51 @@ const FilterListData = ({ tableData }: { tableData?: UsersType[] }) => {
         />
       </Card>
       <AddFilterCategoryDrawer
-            open={addUserOpen}
-            handleClose={() => setAddUserOpen(!addUserOpen)}
-            addFilterCategoryDrawerFun={handleAddFiltersCategory}
-          />
+        open={addUserOpen}
+        handleClose={() => setAddUserOpen(!addUserOpen)}
+        addFilterCategoryDrawerFun={handleAddFiltersCategory}
+      />
 
       <AddFilterDrawer
-              open={addFilterDrawerOpen}
-              defaultCategoryId={category_id} // Pass category_id as a prop
-              addFilterDataDrawer={handleAddFilters}
-              handleClose={handleCloseDrawer}
-              setAllFiltersCategory={getAllFiltersCategory}
-              setCategory={allCategory}
+        open={addFilterDrawerOpen}
+        defaultCategoryId={category_id} // Pass category_id as a prop
+        addFilterDataDrawer={handleAddFilters}
+        handleClose={handleCloseDrawer}
+        setAllFiltersCategory={getAllFiltersCategory}
+        setCategory={allCategory}
+      />
 
-            />
+      <EditFilterCategoryDrawer
+        open={editFilterDrawerOpen}
+        defaultCategoryId={category_id} // Pass category_id as a prop
+        addFilterDataDrawer={handleEditFilters}
+        handleClose={handleCloseEditFilterDrawer}
+        geteditCategoryData={editCategoryData}
+        updateEditCategoryData={setEditCategoryData}
+        updateFilterCategoryDataFun={handleupdateEditFilterCategoryDataFun}
+      />
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id='alert-dialog-title'>{'Confirm Delete'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            Are you sure you want to delete this user?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color='primary'>
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmFilterCatDelete} color='primary' autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }

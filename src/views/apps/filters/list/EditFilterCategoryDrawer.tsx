@@ -18,30 +18,27 @@ type Props = {
   resetForm: () => void
   handleClose: () => void
   addFilterDataDrawer: (formData: FormData) => void
-  setCategory: string
-  setAllFiltersCategory: () => void
+  geteditCategoryData: string
+  updateEditCategoryData: string
+  updateFilterCategoryDataFun: (formData: FormData) => void
 }
 
-const AddFilterDrawer = ({
+const EditFilterCategoryDrawer = ({
   open,
   addFilterDataDrawer,
+  updateFilterCategoryDataFun,
   handleClose,
   defaultCategoryId,
-  setAllFiltersCategory,
-  setCategory
+  geteditCategoryData,
+  updateEditCategoryData
 }: Props) => {
   // States
   const [formData, setFormData] = useState({
-    categoryId: defaultCategoryId,
-    sub_category: '',
-    image: ''
+    name: '',
+    order_no: ''
   })
 
   const [error, setError] = useState(false)
-
-  useEffect(() => {
-    setAllFiltersCategory()
-  }, [])
 
   useEffect(() => {
     resetForm()
@@ -49,52 +46,41 @@ const AddFilterDrawer = ({
 
   const resetForm = () => {
     setFormData({
-      categoryId: defaultCategoryId,
-      sub_category: '',
-      image: ''
+      name: '',
+      order_no: ''
     })
   }
 
-  const handleCategoryChange = e => {
-    console.log('Selected category ID:', e.target.value)
-    setFormData({ ...formData, categoryId: e.target.value })
-  }
+  // const handleSubmit = e => {
+  //   e.preventDefault()
 
-  const handleFileChange = e => {
-    setFormData({ ...formData, image: e.target.files[0] })
-  }
+  //   handleClose()
+  //   setError(false)
 
-  const handleSubmit = e => {
+  //   const data = new FormData()
+
+  //   data.append('category_id', formData.categoryId)
+  //   data.append('sub_category', formData.sub_category)
+
+  //   addFilterDataDrawer(data, resetForm)
+  // }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    if (!formData.sub_category || !formData.image) {
-      setError(true)
-
-      return false
-    } else {
-      handleClose()
-      setError(false)
-
-      const data = new FormData()
-
-      data.append('category_id', formData.categoryId)
-      data.append('sub_category', formData.sub_category)
-
-      if (formData.image) {
-        data.append('image', formData.image)
-      }
-
-      addFilterDataDrawer(data, resetForm)
-    }
+    updateFilterCategoryDataFun({
+      name: geteditCategoryData.name,
+      order_no: geteditCategoryData.order_no,
+      cat_id: geteditCategoryData.id
+    })
+    handleClose()
   }
 
   const handleReset = () => {
     handleClose()
     setError(false)
     setFormData({
-      categoryId: defaultCategoryId,
-      sub_category: '',
-      image: ''
+      name: '',
+      order_no: ''
     })
   }
 
@@ -108,7 +94,7 @@ const AddFilterDrawer = ({
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <div className='flex items-center justify-between plb-5 pli-6'>
-        <Typography variant='h5'>Add Filter</Typography>
+        <Typography variant='h5'>Edit Category</Typography>
         <IconButton onClick={handleReset}>
           <i className='tabler-x text-textPrimary' />
         </IconButton>
@@ -117,38 +103,27 @@ const AddFilterDrawer = ({
       <div>
         <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
           <CustomTextField
-            select
+            label='Parent Category'
             fullWidth
             id='select-role'
             placeholder='Select Category'
-            onChange={handleCategoryChange}
-            value={formData.categoryId}
-            label='Parent Category'
-          >
-            {setCategory &&
-              setCategory.map(category => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.name}
-                </MenuItem>
-              ))}
-          </CustomTextField>
+            value={geteditCategoryData?.name || ''}
+            onChange={e => updateEditCategoryData({ ...geteditCategoryData, name: e.target.value })}
+          />
 
           <CustomTextField
-            label='Title'
+            label='Position'
             fullWidth
+            value={geteditCategoryData?.order_no || ''}
             placeholder='Enter Title'
-            value={formData.sub_category}
-            onChange={e => setFormData({ ...formData, sub_category: e.target.value })}
+            onChange={e => updateEditCategoryData({ ...geteditCategoryData, order_no: e.target.value })}
           />
 
           {error && !formData.sub_category && <span className='input-error'>Please enter valid title.</span>}
 
-          <CustomTextField label='Attachment' fullWidth onChange={handleFileChange} type='file' />
-
-          {error && !formData.sub_category && <span className='input-error'>Please enter valid image.</span>}
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>
-              Add
+              Update
             </Button>
             <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>
               Discard
@@ -160,4 +135,4 @@ const AddFilterDrawer = ({
   )
 }
 
-export default AddFilterDrawer
+export default EditFilterCategoryDrawer
