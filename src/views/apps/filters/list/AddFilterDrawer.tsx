@@ -1,15 +1,13 @@
-// React Imports
 import { useState, useEffect } from 'react'
 
-// MUI Imports
 import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
+import { useForm, Controller } from 'react-hook-form'
 
-// Component Imports
 import CustomTextField from '@core/components/mui/TextField'
 
 type Props = {
@@ -30,15 +28,12 @@ const AddFilterDrawer = ({
   setAllFiltersCategory,
   setCategory
 }: Props) => {
-  // States
-  const [formData, setFormData] = useState({
-    categoryId: defaultCategoryId,
-    sub_category: '',
-    api_key: '',
-    image: ''
-  })
-
-  const [error, setError] = useState(false)
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm()
 
   useEffect(() => {
     setAllFiltersCategory()
@@ -49,57 +44,32 @@ const AddFilterDrawer = ({
   }, [defaultCategoryId])
 
   const resetForm = () => {
-    setFormData({
+    reset({
       categoryId: defaultCategoryId,
       sub_category: '',
       api_key: '',
-      image: ''
+      image: null
     })
   }
 
-  const handleCategoryChange = e => {
-    console.log('Selected category ID:', e.target.value)
-    setFormData({ ...formData, categoryId: e.target.value })
-  }
+  const onSubmit = formData => {
+    const data = new FormData()
 
-  const handleFileChange = e => {
-    setFormData({ ...formData, image: e.target.files[0] })
-  }
+    data.append('category_id', formData.categoryId)
+    data.append('sub_category', formData.sub_category)
+    data.append('api_key', formData.api_key)
 
-  const handleSubmit = e => {
-    e.preventDefault()
-
-    if (!formData.sub_category || !formData.image) {
-      setError(true)
-
-      return false
-    } else {
-      handleClose()
-      setError(false)
-
-      const data = new FormData()
-
-      data.append('category_id', formData.categoryId)
-      data.append('sub_category', formData.sub_category)
-      data.append('api_key', formData.api_key)
-
-      if (formData.image) {
-        data.append('image', formData.image)
-      }
-
-      addFilterDataDrawer(data, resetForm)
+    if (formData.image) {
+      data.append('image', formData.image[0])
     }
+
+    addFilterDataDrawer(data, resetForm)
+    handleClose()
   }
 
   const handleReset = () => {
+    resetForm()
     handleClose()
-    setError(false)
-    setFormData({
-      categoryId: defaultCategoryId,
-      sub_category: '',
-      api_key: '',
-      image: ''
-    })
   }
 
   return (
@@ -119,50 +89,83 @@ const AddFilterDrawer = ({
       </div>
       <Divider />
       <div>
-        <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-          <CustomTextField
-            select
-            fullWidth
-            id='select-role'
-            placeholder='Select Category'
-            onChange={handleCategoryChange}
-            value={formData.categoryId}
-            label='Parent Category'
-          >
-            {setCategory &&
-              setCategory.map(category => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.name}
-                </MenuItem>
-              ))}
-          </CustomTextField>
-
-          <CustomTextField
-            label='Title'
-            fullWidth
-            placeholder='Enter Title'
-            value={formData.sub_category}
-            onChange={e => setFormData({ ...formData, sub_category: e.target.value })}
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6 p-6'>
+          <Controller
+            name='categoryId'
+            control={control}
+            defaultValue={defaultCategoryId}
+            render={({ field }) => (
+              <CustomTextField
+                select
+                fullWidth
+                id='select-role'
+                placeholder='Select Category'
+                onChange={e => field.onChange(e.target.value)}
+                value={field.value}
+                label='Parent Category'
+              >
+                {setCategory &&
+                  setCategory.map(category => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+              </CustomTextField>
+            )}
           />
-
-          {error && !formData.sub_category && <span className='input-error'>Please enter valid title.</span>}
-
-          <CustomTextField
-            label='Api Key'
-            fullWidth
-            placeholder='Enter Api Key'
-            value={formData.api_key}
-            onChange={e => setFormData({ ...formData, api_key: e.target.value })}
+          <Controller
+            name='sub_category'
+            control={control}
+            defaultValue=''
+            rules={{ required: 'Title is required' }}
+            render={({ field }) => (
+              <CustomTextField
+                label='Title'
+                fullWidth
+                placeholder='Enter Title'
+                value={field.value}
+                onChange={field.onChange}
+                error={!!errors.sub_category}
+                helperText={errors.sub_category ? errors.sub_category.message : ''}
+              />
+            )}
           />
-
-          <CustomTextField label='Attachment' fullWidth onChange={handleFileChange} type='file' />
-
-          {error && !formData.sub_category && <span className='input-error'>Please enter valid image.</span>}
+          <Controller
+            name='api_key'
+            control={control}
+            defaultValue=''
+            render={({ field }) => (
+              <CustomTextField
+                label='Api Key'
+                fullWidth
+                placeholder='Enter Api Key'
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
+          <Controller
+            name='image'
+            control={control}
+            rules={{ required: 'Image is required' }}
+            render={({ field }) => (
+              <CustomTextField
+                label='Attachment'
+                fullWidth
+                onChange={e => {
+                  field.onChange(e.target.files)
+                }}
+                type='file'
+                error={!!errors.image}
+                helperText={errors.image ? errors.image.message : ''}
+              />
+            )}
+          />
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>
               Add
             </Button>
-            <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>
+            <Button variant='tonal' color='error' type='button' onClick={handleReset}>
               Discard
             </Button>
           </div>

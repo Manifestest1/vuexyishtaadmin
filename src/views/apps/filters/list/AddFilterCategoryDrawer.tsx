@@ -9,7 +9,14 @@ import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 
 // Component Imports
+import { useForm, Controller } from 'react-hook-form'
+
 import CustomTextField from '@core/components/mui/TextField'
+
+type FormValues = {
+  categoryName: string
+  categoryOrder: string
+}
 
 type Props = {
   open: boolean
@@ -20,24 +27,29 @@ type Props = {
 
 const AddFilterCategoryDrawer = ({ open, handleClose, addFilterCategoryDrawerFun }: Props) => {
   // States
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm<FormValues>({
+    defaultValues: {
+      categoryName: '',
+      categoryOrder: ''
+    }
+  })
 
-  const [categoryName, setCategoryName] = useState(null)
-  const [categoryOrder, setCategoryOrder] = useState(null)
-
-  useEffect(() => {
-    resetForm()
-  }, [])
-
-  const resetForm = () => {
-    setCategoryName(null)
-    setCategoryOrder(null)
+  const onSubmit = (data: FormValues) => {
+    handleClose()
+    console.log(data) // This will log your form data
+    addFilterCategoryDrawerFun(data.categoryName, data.categoryOrder, resetForm)
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    handleClose()
-    console.log(e, 'Get For File')
-    addFilterCategoryDrawerFun(categoryName, categoryOrder, resetForm)
+  const resetForm = () => {
+    reset({
+      categoryName: '',
+      categoryOrder: ''
+    })
   }
 
   const handleReset = () => {
@@ -62,27 +74,45 @@ const AddFilterCategoryDrawer = ({ open, handleClose, addFilterCategoryDrawerFun
       </div>
       <Divider />
       <div>
-        <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-          <CustomTextField
-            label='Title'
-            fullWidth
-            placeholder='Enter Title'
-            value={categoryName}
-            onChange={e => setCategoryName(e.target.value)}
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6 p-6'>
+          <Controller
+            name='categoryName'
+            control={control}
+            defaultValue=''
+            rules={{ required: 'Category Name is required' }}
+            render={({ field }) => (
+              <CustomTextField
+                {...field}
+                label='Title'
+                fullWidth
+                placeholder='Enter Title'
+                error={!!errors.categoryName}
+                helperText={errors.categoryName ? errors.categoryName.message : ''}
+              />
+            )}
           />
-          <CustomTextField
-            label='Position'
-            fullWidth
-            placeholder='Enter Position'
-            value={categoryOrder}
-            onChange={e => setCategoryOrder(e.target.value)}
+          <Controller
+            name='categoryOrder'
+            control={control}
+            defaultValue=''
+            rules={{ required: 'Category Order is required' }}
+            render={({ field }) => (
+              <CustomTextField
+                {...field}
+                label='Position'
+                fullWidth
+                placeholder='Enter Position'
+                error={!!errors.categoryOrder}
+                helperText={errors.categoryOrder ? errors.categoryOrder.message : ''}
+              />
+            )}
           />
 
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>
               Add
             </Button>
-            <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>
+            <Button variant='tonal' color='error' type='button' onClick={handleReset}>
               Discard
             </Button>
           </div>

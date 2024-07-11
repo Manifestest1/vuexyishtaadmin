@@ -5,14 +5,19 @@ import { useRouter } from 'next/navigation'
 import AuthContext from '../context/AuthContext'
 
 const ProtectedLoginRoute = ({ children }) => {
-  const { loading, user } = useContext(AuthContext)
+  const token = localStorage.getItem('token')
+  const { loading } = useContext(AuthContext)
   const router = useRouter()
 
   useEffect(() => {
-    if (!loading && user) {
+    if (loading && token) {
       router.push('/en/dashboards/crm')
     }
-  }, [loading, user, router])
+  }, [loading, token, router])
+
+  if (loading || token) {
+    return <p>Loading...</p>
+  }
 
   return children
 }
