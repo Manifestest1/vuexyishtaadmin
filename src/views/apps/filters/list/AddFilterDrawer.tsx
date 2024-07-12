@@ -35,6 +35,8 @@ const AddFilterDrawer = ({
     formState: { errors }
   } = useForm()
 
+  const [imageName, setImageName] = useState('')
+
   useEffect(() => {
     setAllFiltersCategory()
   }, [])
@@ -65,9 +67,19 @@ const AddFilterDrawer = ({
 
     addFilterDataDrawer(data, resetForm)
     handleClose()
+    setImageName('')
+  }
+
+  const handleFileChange = e => {
+    const file = e.target.files[0]
+
+    if (file) {
+      setImageName(file.name) // Update the selected file name
+    }
   }
 
   const handleReset = () => {
+    setImageName('')
     resetForm()
     handleClose()
   }
@@ -144,7 +156,7 @@ const AddFilterDrawer = ({
               />
             )}
           />
-          <Controller
+          {/* <Controller
             name='image'
             control={control}
             rules={{ required: 'Image is required' }}
@@ -160,10 +172,32 @@ const AddFilterDrawer = ({
                 helperText={errors.image ? errors.image.message : ''}
               />
             )}
+          /> */}
+
+          <Controller
+            name='image'
+            control={control}
+            rules={{ required: 'Image is required' }}
+            render={({ field }) => (
+              <>
+                <CustomTextField
+                  label='Attachment'
+                  fullWidth
+                  type='file'
+                  onChange={e => {
+                    field.onChange(e.target.files)
+                    handleFileChange(e) // Handle file change separately
+                  }}
+                  error={!!errors.image}
+                  helperText={errors.image ? errors.image.message : ''}
+                />
+                {imageName && <p>Selected File: {imageName}</p>}
+              </>
+            )}
           />
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>
-              Add
+              Save
             </Button>
             <Button variant='tonal' color='error' type='button' onClick={handleReset}>
               Discard

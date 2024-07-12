@@ -110,7 +110,7 @@ const AddFilterCategoryDrawer = ({ open, handleClose, addFilterCategoryDrawerFun
 
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>
-              Add
+              Save
             </Button>
             <Button variant='tonal' color='error' type='button' onClick={handleReset}>
               Discard

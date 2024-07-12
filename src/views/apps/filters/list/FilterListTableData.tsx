@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 
 // Next Imports
 // import { useParams } from 'next/navigation'
@@ -64,7 +64,8 @@ import {
   filterDelete,
   filterCategoryEdit,
   filterCategoryDelete,
-  updateFilterCategoryData
+  updateFilterCategoryData,
+  image_base_path
 } from '@/context/api/apiService'
 
 const columnHelper = createColumnHelper()
@@ -84,7 +85,6 @@ const FilterListTableData = () => {
   const [allCategory, setAllCategory] = useState(null)
 
   const [allFilterData, setFilterData] = useState([])
-  const image_base_path = 'http://localhost:8000/'
 
   const [open, setOpen] = useState(false)
   const [selectedFilterCatId, setSelectedFilterCatId] = useState(null)
@@ -258,7 +258,7 @@ const FilterListTableData = () => {
                 }}
               >
                 <Avatar
-                  src={image_base_path + subCategory.image}
+                  src={image_base_path() + subCategory.image}
                   alt='Uploaded Preview'
                   sx={{
                     width: 20,
