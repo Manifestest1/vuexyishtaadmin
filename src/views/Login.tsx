@@ -82,7 +82,7 @@ const Login = () => {
 
         <Grid item xs={12} md={4} sx={{ mt: 36, alignItems: 'center' }}>
           <AuthIllustrationWrapper>
-            <Card className='flex flex-col'>
+            <Card className='flex flex-col sm:is-[450px]'>
               <CardContent className='sm:!p-12'>
                 <div className='flex justify-center mbe-6'>
                   <Logo />
