@@ -35,7 +35,7 @@ export const getAllFilters = () => {
 }
 
 export const filterDelete = filterId => {
-  return axios.put(`/filter/${filterId}/delete`)
+  return axios.put(`/filter/${filterId}/delete`) 
 }
 
 export const filterCategoryEdit = filtercatId => {

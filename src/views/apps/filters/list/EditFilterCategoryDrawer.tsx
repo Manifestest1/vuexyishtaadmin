@@ -60,7 +60,7 @@ const EditFilterCategoryDrawer = ({
   //   const data = new FormData()
 
   //   data.append('category_id', formData.categoryId)
-  //   data.append('sub_category', formData.sub_category)
+  //   data.append('filter', formData.filter)
 
   //   addFilterDataDrawer(data, resetForm)
   // }
@@ -96,7 +96,7 @@ const EditFilterCategoryDrawer = ({
       <div className='flex items-center justify-between plb-5 pli-6'>
         <Typography variant='h5'>Edit Category</Typography>
         <IconButton onClick={handleReset}>
-          <i className='tabler-x text-textPrimary' />
+          <i className='tabler-x text-textPrimary' /> 
         </IconButton>
       </div>
       <Divider />
@@ -108,7 +108,7 @@ const EditFilterCategoryDrawer = ({
             id='select-role'
             placeholder='Select Category'
             value={geteditCategoryData?.name || ''}
-            onChange={e => updateEditCategoryData({ ...geteditCategoryData, name: e.target.value })}
+            onChange={e => updateEditCategoryData({ ...geteditCategoryData, name: e.target.value })} 
           />
 
           <CustomTextField
@@ -119,7 +119,7 @@ const EditFilterCategoryDrawer = ({
             onChange={e => updateEditCategoryData({ ...geteditCategoryData, order_no: e.target.value })}
           />
 
-          {error && !formData.sub_category && <span className='input-error'>Please enter valid title.</span>}
+          {error && !formData.filter && <span className='input-error'>Please enter valid title.</span>}
 
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>

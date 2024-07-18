@@ -116,7 +116,7 @@ const FilterListTableData = () => {
   }
 
   useEffect(() => {
-    getAllFiltersApiFun()
+    getAllFiltersApiFun() 
   }, [])
 
   const handleAddFilters = (formData, resetForm) => {
@@ -268,7 +268,7 @@ const FilterListTableData = () => {
                   }}
                 />
                 <Typography variant='body2' sx={{ marginRight: '8px' }}>
-                  {subCategory.sub_category}
+                  {subCategory.filter}
                 </Typography>
                 <IconButton aria-label='status' onClick={() => handleClickFilterDelete(subCategory.id)}>
                   <CloseIcon />

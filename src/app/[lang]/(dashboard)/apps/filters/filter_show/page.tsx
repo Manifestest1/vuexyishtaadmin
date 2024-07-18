@@ -103,7 +103,7 @@ const DashboardTable = () => {
                   </TableCell>
                   <TableCell>{data.order_no}</TableCell>
                   <TableCell>
-                    {data.sub_categories.map((subCategory, index) => (
+                    {data.sub_categories.map((subCategory, index) => ( 
                       <span
                         key={index}
                         style={{ justifyContent: 'center', borderRadius: '4px', padding: '20px', cursor: 'pointer' }}
@@ -115,7 +115,7 @@ const DashboardTable = () => {
                           height={20}
                           style={{ borderRadius: '50%', marginTop: '13px', marginRight: '12px' }}
                         />
-                        <span>{subCategory.sub_category}</span>
+                        <span>{subCategory.filter}</span>
                       </span>
                     ))}
                   </TableCell>

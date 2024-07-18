@@ -58,14 +58,17 @@ const Login = () => {
 
   // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const { login } = useContext(AuthContext)
 
   const onSubmit = async (data: FormValues) => {
-    try {
+    try 
+    {
       await login(data.email, data.password)
     } catch (error) {
       // Handle error
+      setErrorMessage('Invalid email or password. Please try again.')
       console.error(error)
     }
   }
@@ -91,6 +94,11 @@ const Login = () => {
                   <Typography variant='h4'>{`Welcome to ${themeConfig.templateName}! 👋🏻`}</Typography>
                   <Typography>Please sign-in to your account and start the adventure</Typography>
                 </div>
+                {errorMessage && (
+                  <Typography color='error' className='mbe-6'>
+                    {errorMessage}
+                  </Typography>
+                )}
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6'>
                   <Controller
                     name='email'

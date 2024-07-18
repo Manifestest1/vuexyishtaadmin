@@ -47,8 +47,8 @@ const AddFilterDrawer = ({
 
   const resetForm = () => {
     reset({
-      categoryId: defaultCategoryId,
-      sub_category: '',
+      categoryId: defaultCategoryId, 
+      filter: '',
       api_key: '',
       image: null
     })
@@ -58,7 +58,7 @@ const AddFilterDrawer = ({
     const data = new FormData()
 
     data.append('category_id', formData.categoryId)
-    data.append('sub_category', formData.sub_category)
+    data.append('filter', formData.filter)
     data.append('api_key', formData.api_key)
 
     if (formData.image) {
@@ -126,7 +126,7 @@ const AddFilterDrawer = ({
             )}
           />
           <Controller
-            name='sub_category'
+            name='filter'
             control={control}
             defaultValue=''
             rules={{ required: 'Title is required' }}
@@ -137,8 +137,8 @@ const AddFilterDrawer = ({
                 placeholder='Enter Title'
                 value={field.value}
                 onChange={field.onChange}
-                error={!!errors.sub_category}
-                helperText={errors.sub_category ? errors.sub_category.message : ''}
+                error={!!errors.filter}
+                helperText={errors.filter ? errors.filter.message : ''}
               />
             )}
           />
