@@ -125,6 +125,14 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         <SubMenu label={dictionary['navigation'].filters} icon={<i className='tabler-filter' />}>
           <MenuItem href={`/${locale}/apps/filters/list`}>{dictionary['navigation'].list}</MenuItem>
         </SubMenu>
+
+        <SubMenu label={dictionary['navigation'].credit} icon={<i className='tabler-file' />}>
+          <MenuItem href={`/${locale}/apps/credit/list`}>{dictionary['navigation'].list}</MenuItem>
+        </SubMenu>
+
+        <SubMenu label={dictionary['navigation'].order} icon={<i className='tabler-file' />}>
+          <MenuItem href={`/${locale}/apps/order/list`}>{dictionary['navigation'].list}</MenuItem>
+        </SubMenu>
         {/* Users Menu Setup */}
 
         {/* <SubMenu label={dictionary['navigation'].rolesPermissions} icon={<i className='tabler-lock' />}>

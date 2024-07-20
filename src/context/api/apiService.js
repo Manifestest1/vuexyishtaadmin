@@ -13,7 +13,7 @@ export const userStatusUpdate = (userId, newStatus) => {
 }
 
 export const userDelete = userId => {
-  return axios.put(`/user/${userId}/delete`)
+  return axios.put(`/user/${userId}/delete`) 
 }
 
 // Filters Api
@@ -48,4 +48,29 @@ export const updateFilterCategoryData = formData => {
 
 export const filterCategoryDelete = filtercatId => {
   return axios.put(`/filter-category/${filtercatId}/delete`)
+}
+
+// Credit Api
+
+export const getAllCredit = () => {
+  return axios.get('/get_credits_data')
+}
+
+export const addCreditData = (label, value, credit) => {
+  return axios.post('/add_credit_data', { label, value, credit })
+}
+
+export const setCreditData = (image_credit) => {
+  return axios.post('/set_credit_image', { image_credit })
+}
+
+export const creditDataDelete = creditId => {
+  return axios.put(`/credit-data/${creditId}/delete`)
+}
+
+export const CreditEditData = creditId => {
+  return axios.put(`/credit-data/${creditId}/edit`)
+}
+export const updateCreditData = formData => {
+  return axios.post('/credit_data_update', formData)
 }
