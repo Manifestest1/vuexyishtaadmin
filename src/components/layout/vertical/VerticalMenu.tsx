@@ -118,7 +118,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             <MenuItem href={`/${locale}/apps/user/list`}>{dictionary['navigation'].list}</MenuItem>
             <MenuItem href={`/${locale}/apps/user/view`}>{dictionary['navigation'].view}</MenuItem>
           </SubMenu> */}
-        <MenuItem href={`/${locale}/apps/user/list`} icon={<i className='tabler-user' />}>
+        <MenuItem href={`/${locale}/apps/user/list`} icon={<i className='tabler-user' />}> 
           {dictionary['navigation'].users}
         </MenuItem>
 
@@ -126,13 +126,18 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           <MenuItem href={`/${locale}/apps/filters/list`}>{dictionary['navigation'].list}</MenuItem>
         </SubMenu>
 
-        <SubMenu label={dictionary['navigation'].credit} icon={<i className='tabler-file' />}>
+        <SubMenu label={dictionary['navigation'].plan} icon={<i className='tabler-file' />}>
           <MenuItem href={`/${locale}/apps/credit/list`}>{dictionary['navigation'].list}</MenuItem>
         </SubMenu>
 
-        <SubMenu label={dictionary['navigation'].order} icon={<i className='tabler-file' />}>
+        {/* <SubMenu label={dictionary['navigation'].order} icon={<i className='tabler-file' />}>
           <MenuItem href={`/${locale}/apps/order/list`}>{dictionary['navigation'].list}</MenuItem>
-        </SubMenu>
+        </SubMenu> */}
+
+        <MenuItem href={`/${locale}/apps/order/list`} icon={<i className='tabler-file' />}>
+          {dictionary['navigation'].order}
+        </MenuItem>
+
         {/* Users Menu Setup */}
 
         {/* <SubMenu label={dictionary['navigation'].rolesPermissions} icon={<i className='tabler-lock' />}>

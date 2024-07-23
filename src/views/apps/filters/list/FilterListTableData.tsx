@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import Checkbox from '@mui/material/Checkbox'
 
 import { useTheme } from '@mui/material/styles'
-import TablePagination from '@mui/material/TablePagination'
+import TablePagination from '@mui/material/TablePagination' 
 import MenuItem from '@mui/material/MenuItem'
 
 import {
@@ -253,7 +253,7 @@ const FilterListTableData = () => {
                   marginBottom: '5px',
                   maxWidth: 'calc(100% - 10px)',
                   '&:hover': {
-                    backgroundColor: theme.palette.action.hover
+                    backgroundColor: theme.palette.action.hover 
                   }
                 }}
               >

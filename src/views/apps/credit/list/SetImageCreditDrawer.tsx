@@ -40,7 +40,7 @@ const SetImageCreditDrawer = ({ open, handleClose, setCreditDrawerFun }: Props) 
   const onSubmit = (data: FormValues) => {
     handleClose()
     console.log(data) // This will log your form data
-    setCreditDrawerFun(data.image_credit, resetForm)
+    setCreditDrawerFun(data.image_credit, resetForm) 
   }
 
   const resetForm = () => {

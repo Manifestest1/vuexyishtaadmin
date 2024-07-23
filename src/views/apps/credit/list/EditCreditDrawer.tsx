@@ -31,7 +31,7 @@ const EditCreditDrawer = ({
   updateEditCreditData
 }: Props) => {
   // States
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({ 
     label: '',
     value: '',
     credit: ''

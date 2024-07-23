@@ -53,7 +53,7 @@ export const filterCategoryDelete = filtercatId => {
 // Credit Api
 
 export const getAllCredit = () => {
-  return axios.get('/get_credits_data')
+  return axios.get('/get_credits_data') 
 }
 
 export const addCreditData = (label, value, credit) => {
@@ -61,7 +61,7 @@ export const addCreditData = (label, value, credit) => {
 }
 
 export const setCreditData = (image_credit) => {
-  return axios.post('/set_credit_image', { image_credit })
+  return axios.post('/set_credit_image', { image_credit }) 
 }
 
 export const creditDataDelete = creditId => {
@@ -73,4 +73,10 @@ export const CreditEditData = creditId => {
 }
 export const updateCreditData = formData => {
   return axios.post('/credit_data_update', formData)
+}
+
+// Order Api
+
+export const getAllOrders = () => {
+  return axios.get('/get_orders_data')
 }

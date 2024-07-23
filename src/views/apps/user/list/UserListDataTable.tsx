@@ -7,6 +7,7 @@ import {
   flexRender,
   getPaginationRowModel
 } from '@tanstack/react-table'
+import Checkbox from '@mui/material/Checkbox'
 import {
   Table,
   TableHead,
@@ -100,10 +101,14 @@ const UserListDataTable = () => {
   }
 
   const columns = [
-    columnHelper.accessor((row, index) => index + 1, {
-      id: 'serialNo',
-      header: () => 'Serial No.',
-      cell: info => info.getValue()
+    // columnHelper.accessor((row, index) => index + 1, {
+    //   id: 'serialNo',
+    //   header: () => 'Serial No.',
+    //   cell: info => info.getValue()
+    // }),
+    columnHelper.accessor('checkbox', {
+      header: () => <Checkbox />,
+      cell: () => <Checkbox />
     }),
     columnHelper.accessor('name', {
       header: () => 'Name',

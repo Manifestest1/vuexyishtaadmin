@@ -112,7 +112,7 @@ const AddFilterDrawer = ({
                 fullWidth
                 id='select-role'
                 placeholder='Select Category'
-                onChange={e => field.onChange(e.target.value)}
+                onChange={e => field.onChange(e.target.value)} 
                 value={field.value}
                 label='Parent Category'
               >
